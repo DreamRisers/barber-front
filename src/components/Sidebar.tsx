@@ -6,43 +6,87 @@ import {
 	faDollarSign,
 	faSignOutAlt,
 	faBars,
+	faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Sidebar() {
+	const [navOpen, setNavOpen] = useState<boolean>(false);
+
+	const toggleNav = () => setNavOpen(!navOpen);
+
 	return (
-		<aside className="hidden lg:flex bg-barberBlue lg:w-16 lg:h-screen flex-col items-center justify-center gap-10 fixed">
+		<>
 			<FontAwesomeIcon
-				icon={faBars}
-				className="text-white cursor-pointer w-10 h-10 p-4 absolute top-0"
+				icon={!navOpen ? faBars : faXmark}
+				className="text-white w-10 h-10 absolute top-4 left-4 cursor-pointer"
+				onClick={toggleNav}
 			/>
 
-			<Link href={"/barbers"} className="text-white">
-				<FontAwesomeIcon
-					icon={faScissors}
-					className="text-white cursor-pointer w-10 h-10"
-				/>
-			</Link>
+			<aside className="lg:bg-barberBlue lg:flex w-full mt-16 lg:w-fit lg:px-3 lg:h-screen flex-col justify-center fixed">
+				<div
+					className={`${
+						navOpen ? "block" : "hidden"
+					} lg:flex lg:flex-col gap-10 lg:items-start bg-barberBlue/90 w-full p-4 rounded-b-lg max-lg:space-y-6`}
+				>
+					<Link
+						href={"/barberos"}
+						className="flex hover:scale-110 transition duration-200 items-center w-full max-lg:justify-center"
+					>
+						<FontAwesomeIcon
+							icon={faScissors}
+							className="text-white w-10 h-10"
+						/>
+						{navOpen && (
+							<span className="text-white ml-2 text-2xl font-bold uppercase lg:capitalize">
+								Barberos
+							</span>
+						)}
+					</Link>
 
-			<Link href={"/appointments"}>
-				<FontAwesomeIcon
-					icon={faCalendar}
-					className="text-white cursor-pointer w-10 h-10"
-				/>
-			</Link>
+					<Link
+						href={"/turnos"}
+						className="flex hover:scale-110 transition duration-200 items-center w-full max-lg:justify-center"
+					>
+						<FontAwesomeIcon
+							icon={faCalendar}
+							className="text-white w-10 h-10"
+						/>
+						{navOpen && (
+							<span className="text-white ml-2 text-2xl font-bold uppercase lg:capitalize">Turnos</span>
+						)}
+					</Link>
 
-			<Link href={"/gains"}>
-				<FontAwesomeIcon
-					icon={faDollarSign}
-					className="text-white cursor-pointer w-10 h-10"
-				/>
-			</Link>
+					<Link
+						href={"/ganancias"}
+						className="flex hover:scale-110 transition duration-200 items-center w-full max-lg:justify-center"
+					>
+						<FontAwesomeIcon
+							icon={faDollarSign}
+							className="text-white w-10 h-10"
+						/>
+						{navOpen && (
+							<span className="text-white ml-2 text-2xl font-bold uppercase lg:capitalize">
+								Ganancias
+							</span>
+						)}
+					</Link>
 
-			<FontAwesomeIcon
-				icon={faSignOutAlt}
-				className="text-white cursor-pointer w-10 h-10 absolute bottom-4"
-			/>
-		</aside>
+					<div className="flex items-center hover:scale-105 transition duration-200 cursor-pointer w-full max-lg:justify-center">
+						<FontAwesomeIcon
+							icon={faSignOutAlt}
+							className="text-white w-8 h-8"
+						/>
+						{navOpen && (
+							<span className="text-white ml-2 text-xl font-bold uppercase lg:capitalize">
+								Cerrar sesión
+							</span>
+						)}
+					</div>
+				</div>
+			</aside>
+		</>
 	);
 }
