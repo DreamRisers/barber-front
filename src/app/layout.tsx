@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
+import Footer from "../components/Footer";
 
 export const metadata: Metadata = {
 	title: "Barbas Club",
@@ -13,8 +16,11 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="es">
-			<body>
-				<main>{children}</main>
+			<body className="min-h-screen flex flex-col">
+        <Header />
+        <Sidebar />
+				<main className="flex-grow">{children}</main>
+        <Footer />
 			</body>
 		</html>
 	);
