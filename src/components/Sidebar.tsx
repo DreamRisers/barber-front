@@ -19,17 +19,17 @@ export default function Sidebar() {
 
 	return (
 		<>
-			<FontAwesomeIcon
-				icon={!navOpen ? faBars : faXmark}
-				className="text-white w-10 h-10 absolute top-4 left-4 cursor-pointer"
-				onClick={toggleNav}
-			/>
+			<aside className="lg:bg-barberBlue w-full lg:w-fit lg:px-3 lg:h-screen fixed">
+				<FontAwesomeIcon
+					icon={!navOpen ? faBars : faXmark}
+					className="text-white w-10 h-10 absolute top-4 left-2 lg:left-6 cursor-pointer"
+					onClick={toggleNav}
+				/>
 
-			<aside className="lg:bg-barberBlue lg:flex w-full mt-16 lg:w-fit lg:px-3 lg:h-screen flex-col justify-center fixed">
-				<div
+				<nav
 					className={`${
 						navOpen ? "block" : "hidden"
-					} lg:flex lg:flex-col gap-10 lg:items-start bg-barberBlue/90 w-full p-4 rounded-b-lg max-lg:space-y-6`}
+					} lg:flex lg:flex-col bg-barberBlue/90 w-full p-4 rounded-b-lg space-y-6 mt-16 lg:justify-around lg:mt-[35vh]`}
 				>
 					<Link
 						href={"/barberos"}
@@ -55,7 +55,9 @@ export default function Sidebar() {
 							className="text-white w-10 h-10"
 						/>
 						{navOpen && (
-							<span className="text-white ml-2 text-2xl font-bold uppercase lg:capitalize">Turnos</span>
+							<span className="text-white ml-2 text-2xl font-bold uppercase lg:capitalize">
+								Turnos
+							</span>
 						)}
 					</Link>
 
@@ -74,7 +76,7 @@ export default function Sidebar() {
 						)}
 					</Link>
 
-					<div className="flex items-center hover:scale-105 transition duration-200 cursor-pointer w-full max-lg:justify-center">
+					<div className="flex items-center hover:scale-105 transition duration-200 cursor-pointer w-full max-lg:justify-center lg:absolute lg:bottom-4">
 						<FontAwesomeIcon
 							icon={faSignOutAlt}
 							className="text-white w-8 h-8"
@@ -85,7 +87,7 @@ export default function Sidebar() {
 							</span>
 						)}
 					</div>
-				</div>
+				</nav>
 			</aside>
 		</>
 	);
