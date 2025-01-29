@@ -29,7 +29,7 @@ export default function Sidebar() {
 				<nav
 					className={`${
 						navOpen ? "block" : "hidden"
-					} lg:flex lg:flex-col bg-barberBlue/90 w-full p-4 rounded-b-lg space-y-6 mt-16 lg:justify-around lg:mt-[35vh]`}
+					} lg:flex lg:flex-col bg-barberBlue/90 w-full p-4 rounded-b-lg space-y-6 lg:space-y-10 mt-16 lg:justify-around lg:mt-[30vh]`}
 				>
 					<Link
 						href={"/barberos"}
