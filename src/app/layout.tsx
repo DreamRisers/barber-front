@@ -5,23 +5,23 @@ import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
 
 export const metadata: Metadata = {
-	title: "Barbas Club",
-	description: "La mejor barbería de la ciudad!",
+  title: "Barbas Club",
+  description: "La mejor barbería de la ciudad!",
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html lang="es">
-			<body className="min-h-screen flex flex-col">
+  return (
+    <html lang="es">
+      <body className="min-h-screen flex flex-col">
         <Header />
         <Sidebar />
-				<main className="flex-grow">{children}</main>
+        <main className="flex-grow mr-4">{children}</main>
         <Footer />
-			</body>
-		</html>
-	);
+      </body>
+    </html>
+  );
 }

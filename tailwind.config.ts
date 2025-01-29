@@ -12,6 +12,7 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         barberBlue: "#2F51BC",
+        barberBgGrey: "rgba(200, 200, 200, 1)",
       },
     },
   },
