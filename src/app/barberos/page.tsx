@@ -27,7 +27,7 @@ const BarberPage = () => {
 
   return (
     <div>
-      <div className="mt-28 ml-4 sm:ml-8 md:ml-16 lg:ml-40">
+      <div>
         <p className="flex justify-center items-center pb-10 font-bold text-2xl">
           BARBEROS
         </p>
