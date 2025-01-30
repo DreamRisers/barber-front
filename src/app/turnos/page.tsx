@@ -43,7 +43,7 @@ const TurnosPage = () => {
 
   return (
     <div>
-      <p className="text-center font-bold text-2xl mb-6">TURNOS</p>
+      <h1 className="text-center font-bold text-2xl mb-6">TURNOS</h1>
       <div className="lg:flex lg:justify-between w-full ">
         <div className="flex max-lg:flex-col max-lg:justify-center gap-4 max-lg:gap-8">
           <div className="flex flex-col">
