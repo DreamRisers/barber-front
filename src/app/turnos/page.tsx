@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPen, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { IAppointments } from "@/interfaces/types";
+import { AppointmentStatusTranslations, IAppointment, PaymentMethodTranslations } from "@/interfaces/types";
 import ModalAppointment from "@/components/ModalAppointment";
 import { getAllAppointments } from "@/helpers/appointments";
 
@@ -14,7 +14,7 @@ const TurnosPage = () => {
 	);
 	const [loading, setLoading] = useState(true);
 
-	const [appointments, setAppointments] = useState<IAppointments[]>();
+	const [appointments, setAppointments] = useState<IAppointment[]>();
 
 	const openModal = (id?: string) => {
 		setSelectedAppointment(id ?? null);
@@ -43,7 +43,7 @@ const TurnosPage = () => {
 			}
 		};
 		fetchAppointments();
-	}, []);
+	}, [isModalOpen]);
 
 	const totalMonto = appointments?.reduce(
 		(total, appointment) => total + appointment.price,
@@ -143,7 +143,6 @@ const TurnosPage = () => {
 							</tr>
 						) : (
 							appointments?.map((appointment) => (
-								console.log(appointment),
 								<tr
 									key={appointment.id}
 									className="bg-[#C8C8C8] hover:bg-[#dad9d9]"
@@ -152,7 +151,7 @@ const TurnosPage = () => {
 										{appointment.client_name}
 									</td>
 									<td className="px-4 py-2 border">
-										{appointment.paymentMethod}
+										{PaymentMethodTranslations[appointment.paymentMethod]}
 									</td>
 									<td className="px-4 py-2 border">{appointment.price} ARS</td>
 									<td className="px-4 py-2 border max-lg:hidden">
@@ -171,7 +170,7 @@ const TurnosPage = () => {
 										{appointment.date}
 									</td>
 									<td className="px-4 py-2 border max-lg:hidden">
-										{appointment.status}
+										{AppointmentStatusTranslations[appointment.status]}
 									</td>
 									<td className="px-4 py-2 border text-center">
 										<FontAwesomeIcon

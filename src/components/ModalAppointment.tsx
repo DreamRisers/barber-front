@@ -1,5 +1,18 @@
-import { createAppointment, getAppointmentById } from "@/helpers/appointments";
-import { IModalProps, INewAppointment } from "@/interfaces/types";
+import {
+	createAppointment,
+	editAppointment,
+	getAppointmentById,
+} from "@/helpers/appointments";
+import { getAllBarbers } from "@/helpers/barbers";
+import { getAllBranches } from "@/helpers/branches";
+import {
+	IModalProps,
+	INewAppointment,
+	IBarber,
+	IBranch,
+	AppointmentStatus,
+	PaymentMethod,
+} from "@/interfaces/types";
 import { useEffect, useState } from "react";
 
 export default function ModalAppointment({
@@ -7,36 +20,73 @@ export default function ModalAppointment({
 	UUID,
 	onClose,
 }: IModalProps) {
-	const [formData, setFormData] = useState<INewAppointment>();
+	const [formData, setFormData] = useState<INewAppointment>({
+		price: 0,
+		services: "",
+		client_name: "",
+		client_phone: "",
+		status: AppointmentStatus.PENDING,
+		paymentMethod: PaymentMethod.CASH,
+		date: "",
+		barber: { barberId: "", name: "" },
+		branch: { id: "", name: "" },
+	});
+	const [barbers, setBarbers] = useState<IBarber[]>([]);
+	const [branches, setBranches] = useState<IBranch[]>([]);
 
 	const closeModal = () => {
+		setFormData({
+			price: 0,
+			services: "",
+			client_name: "",
+			client_phone: "",
+			status: AppointmentStatus.PENDING,
+			paymentMethod: PaymentMethod.CASH,
+			date: "",
+			barber: { barberId: "", name: "" },
+			branch: { id: "", name: "" },
+		});
+
+		UUID = null;
 		onClose();
 	};
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 	) => {
-		setFormData(
-			(prevData) =>
-				({
-					...prevData,
-					[e.target.name]:
-						e.target.type === "number"
-							? Number(e.target.value) || 0
-							: e.target.value,
-				} as INewAppointment)
-		);
+		const { name, value, type } = e.target;
+
+		setFormData((prevData) => {
+			if (!prevData) return prevData;
+
+			if (type === "date") {
+				return { ...prevData, [name]: value };
+			}
+
+			if (type === "number") {
+				return { ...prevData, [name]: Number(value) || 0 };
+			}
+
+			return { ...prevData, [name]: value };
+		});
 	};
 
 	const handleSubmit = async () => {
 		if (!formData) return;
+
 		try {
-			await createAppointment(formData);
-			alert("Turno creado con éxito");
+			if (UUID) {
+				await editAppointment(UUID, formData);
+				alert("Turno actualizado con éxito");
+			} else {
+				await createAppointment(formData);
+				alert("Turno creado con éxito");
+			}
+
 			closeModal();
 		} catch (error) {
-			console.error("Error al crear el turno:", error);
-			alert("Hubo un problema al crear el turno");
+			console.error("Error al guardar el turno:", error);
+			alert("Hubo un problema al guardar el turno");
 		}
 	};
 
@@ -58,6 +108,12 @@ export default function ModalAppointment({
 				if (UUID) {
 					await fetchAppointment(UUID);
 				}
+
+				const branchesData = await getAllBranches();
+				setBranches(branchesData);
+
+				const barbersData = await getAllBarbers();
+				setBarbers(barbersData);
 			}
 		};
 		loadAppointment();
@@ -69,7 +125,9 @@ export default function ModalAppointment({
 		<div>
 			<div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
 				<div className="bg-white p-5 rounded-lg w-[500px] space-y-6">
-					<h2 className="text-2xl font-bold text-center">Nuevo Turno</h2>
+					<h2 className="text-2xl font-bold text-center">
+						{formData ? "Editar" : "Nuevo"} Turno
+					</h2>
 
 					<div>
 						<div className="flex flex-col">
@@ -80,28 +138,42 @@ export default function ModalAppointment({
 								Sucursal
 							</label>
 							<select
-								id="branch"
 								name="branch"
-								value={formData?.branch}
 								onChange={handleChange}
-								className="border bg-[#C8C8C8] p-3 rounded-lg sm:w-auto w-full"
+								defaultValue={formData?.branch.id}
+								className="bg-gray-200 border border-gray-300 p-2 rounded-md w-full"
 							>
-								<option value="014a9b22-f615-4d56-bf7c-23db927dcdd1">Sucursal Prueba</option>
-								<option value="sucursal2">Sucursal 2</option>
-								<option value="sucursal3">Sucursal 3</option>
+								<option value="" disabled>
+									Seleccione una sucursal
+								</option>
+								{branches.map((branch, index) => (
+									<option key={branch.id || index} value={branch.id}>
+										{branch.name}
+									</option>
+								))}
 							</select>
 						</div>
 
 						<div className="space-y-2">
 							<label className="text-sm font-bold">Barbero</label>
-							<input
-								type="text"
+							<select
 								name="barber"
-								value={formData?.barber}
 								onChange={handleChange}
-								placeholder="Barbero N° 1"
+								defaultValue={formData?.barber.barberId}
 								className="bg-gray-200 border border-gray-300 p-2 rounded-md w-full"
-							/>
+							>
+								<option value="" disabled>
+									Seleccione un barbero
+								</option>
+								{barbers.map((barber, index) => (
+									<option
+										key={barber.barberId || index}
+										value={barber.barberId}
+									>
+										{barber.name}
+									</option>
+								))}
+							</select>
 						</div>
 
 						<div className="space-y-2">
@@ -109,8 +181,8 @@ export default function ModalAppointment({
 							<input
 								type="text"
 								name="client_name"
-								value={formData?.client_name}
 								onChange={handleChange}
+								value={formData?.client_name}
 								placeholder="Nombre del Cliente"
 								className="bg-gray-200 border border-gray-300 p-2 rounded-md w-full"
 							/>
@@ -121,7 +193,7 @@ export default function ModalAppointment({
 							<input
 								type="date"
 								name="date"
-								value={formData?.date ? new Date(formData.date).toISOString().split("T")[0] : ""}
+								value={formData?.date}
 								onChange={handleChange}
 								className="bg-gray-200 border border-gray-300 p-2 rounded-md w-full"
 							/>
@@ -131,9 +203,9 @@ export default function ModalAppointment({
 							<label className="text-sm font-bold">Servicio</label>
 							<input
 								type="text"
-								name="service"
-								value={formData?.services}
+								name="services"
 								onChange={handleChange}
+								value={formData?.services}
 								placeholder="Ejemplo: Corte clásico"
 								className="bg-gray-200 border border-gray-300 p-2 rounded-md w-full"
 							/>

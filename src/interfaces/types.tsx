@@ -10,11 +10,25 @@ export enum PaymentMethod {
 	TRANSFER = "transfer",
 }
 
-export interface Barber {
+export const AppointmentStatusTranslations = {
+	pending: "Pendiente",
+	paid: "Pagado",
+	completed: "Completado",
+	cancelled: "Cancelado",
+};
+
+export const PaymentMethodTranslations = {
+	cash: "Efectivo",
+	transfer: "Transferencia",
+};
+
+export interface IBarber {
+	barberId: string;
 	name: string;
 }
 
-export interface Branch {
+export interface IBranch {
+	id: string;
 	name: string;
 }
 
@@ -26,20 +40,12 @@ export interface INewAppointment {
 	status: AppointmentStatus;
 	paymentMethod: PaymentMethod;
 	date: string;
-	barber: string;
-	branch: string;
+	barber: IBarber;
+	branch: IBranch;
 }
-export interface IAppointments {
+
+export interface IAppointment extends INewAppointment {
 	id: string;
-	price: number;
-	services: string;
-	client_name: string;
-	client_phone: string;
-	status: AppointmentStatus;
-	paymentMethod: PaymentMethod;
-	date: string;
-	barber: Barber;
-	branch: Branch;
 }
 
 export interface IModalProps {
