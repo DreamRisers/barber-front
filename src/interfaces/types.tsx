@@ -10,6 +10,14 @@ export enum PaymentMethod {
 	TRANSFER = "transfer",
 }
 
+export interface Barber {
+	name: string;
+}
+
+export interface Branch {
+	name: string;
+}
+
 export interface INewAppointment {
 	price: number;
 	services: string;
@@ -18,8 +26,8 @@ export interface INewAppointment {
 	status: AppointmentStatus;
 	paymentMethod: PaymentMethod;
 	date: string;
-  barber: string;
-  branch: string;
+	barber: string;
+	branch: string;
 }
 export interface IAppointments {
 	id: string;
@@ -30,8 +38,8 @@ export interface IAppointments {
 	status: AppointmentStatus;
 	paymentMethod: PaymentMethod;
 	date: string;
-  barber: string;
-  branch: string;
+	barber: Barber;
+	branch: Branch;
 }
 
 export interface IModalProps {

@@ -34,8 +34,8 @@ const TurnosPage = () => {
 	useEffect(() => {
 		const fetchAppointments = async () => {
 			try {
-				const appointments = await getAllAppointments();
-				setAppointments(appointments);
+				const resAppointments = await getAllAppointments();
+				setAppointments(resAppointments);
 			} catch (err) {
 				console.error("Error al obtener los turnos:", err);
 			} finally {
@@ -143,6 +143,7 @@ const TurnosPage = () => {
 							</tr>
 						) : (
 							appointments?.map((appointment) => (
+								console.log(appointment),
 								<tr
 									key={appointment.id}
 									className="bg-[#C8C8C8] hover:bg-[#dad9d9]"
@@ -155,10 +156,10 @@ const TurnosPage = () => {
 									</td>
 									<td className="px-4 py-2 border">{appointment.price} ARS</td>
 									<td className="px-4 py-2 border max-lg:hidden">
-										{appointment.branch}
+										{appointment.branch.name}
 									</td>
 									<td className="px-4 py-2 border max-lg:hidden">
-										{appointment.barber}
+										{appointment.barber.name}
 									</td>
 									<td className="px-4 py-2 border max-lg:hidden">
 										{appointment.client_phone}
@@ -166,7 +167,6 @@ const TurnosPage = () => {
 									<td className="px-4 py-2 border max-lg:hidden">
 										{appointment.services ?? "N/A"}
 									</td>
-
 									<td className="px-4 py-2 border max-lg:hidden">
 										{appointment.date}
 									</td>
