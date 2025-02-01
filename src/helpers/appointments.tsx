@@ -1,10 +1,11 @@
-import { ICliente } from "@/interfaces/types";
+import { INewAppointment } from "@/interfaces/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const createAppointment = async (appointmentData: ICliente) => {
+export const createAppointment = async (appointmentData: INewAppointment) => {
+  console.log(appointmentData);
   try {
-    const response = await fetch(`${API_URL}/appointments`, {
+    const response = await fetch(`${API_URL}/appointment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -23,7 +24,7 @@ export const createAppointment = async (appointmentData: ICliente) => {
 
 export const getAppointmentById = async (id: string) => {
   try {
-    const response = await fetch(`${API_URL}/appointments/${id}`);
+    const response = await fetch(`${API_URL}/appointment/${id}`);
 
     if (!response.ok) throw new Error("Turno no encontrado");
 
@@ -36,7 +37,7 @@ export const getAppointmentById = async (id: string) => {
 
 export const getAllAppointments = async () => {
   try {
-    const response = await fetch(`${API_URL}/appointments`);
+    const response = await fetch(`${API_URL}/appointment`);
 
     if (!response.ok) throw new Error("Error al obtener los turnos");
 
