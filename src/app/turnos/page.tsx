@@ -1,25 +1,33 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPen, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { clientes } from "@/helpers/clientes";
 import { ICliente } from "@/interfaces/types";
+import ModalAppointment from "@/components/ModalAppointment";
+import { getAllAppointments } from "@/helpers/appointments";
 
 const TurnosPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => {
+  // Este es para saber que appointment selecciono
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<
+    string | null
+  >(null);
+  const [loading, setLoading] = useState(true);
+
+  // Estos son los appointments actualizados
+  const [appointments, setAppointments] = useState<ICliente[]>();
+
+  // Si se pasa un id se deberia abrir el modal con ese id, si no, solo se abre el modal con campos vacios
+  const openModal = (id?: string) => {
+    setSelectedAppointmentId(id ?? null);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setSelectedAppointmentId(null);
   };
-
-  const totalMonto = clientes.reduce(
-    (total, cliente) => total + parseFloat(cliente.monto),
-    0
-  );
 
   const visibleHeaders = ["CLIENTE", "METODO PAGO", "MONTO"];
   const hiddenHeaders = [
@@ -40,6 +48,27 @@ const TurnosPage = () => {
     "fecha",
     "estado_pago",
   ];
+  // en la const appointments deberian estar todos los appointments
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const appointments = await getAllAppointments();
+        setAppointments(appointments);
+      } catch (err) {
+        console.error("Error al obtener los turnos:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAppointments();
+  }, []);
+
+  const totalMonto = appointments?.reduce(
+    (total, cliente) => total + parseFloat(cliente.monto),
+    0
+  );
+
+  if (loading) return <p>Cargando turnos...</p>;
 
   return (
     <div>
@@ -124,27 +153,38 @@ const TurnosPage = () => {
             </tr>
           </thead>
           <tbody>
-            {clientes.map((cliente, index) => (
-              <tr key={index} className="bg-[#C8C8C8] hover:bg-[#dad9d9]">
-                {visibleFields.map((field) => (
-                  <td key={field} className="px-4 py-2 border">
-                    {cliente[field]}
-                  </td>
-                ))}
-                {hiddenFields.map((field) => (
-                  <td key={field} className="px-4 py-2 border max-lg:hidden">
-                    {cliente[field]}
-                  </td>
-                ))}
-                <td className="px-4 py-2 border text-center">
-                  <FontAwesomeIcon
-                    icon={faUserPen}
-                    className="cursor-pointer text-blue-500"
-                    onClick={() => openModal()}
-                  />
+            {appointments?.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={visibleFields.length + hiddenFields.length + 1}
+                  className="px-4 py-2 border text-center"
+                >
+                  No hay turnos agendados.
                 </td>
               </tr>
-            ))}
+            ) : (
+              appointments?.map((cliente, index) => (
+                <tr key={index} className="bg-[#C8C8C8] hover:bg-[#dad9d9]">
+                  {visibleFields.map((field) => (
+                    <td key={field} className="px-4 py-2 border">
+                      {cliente[field]}
+                    </td>
+                  ))}
+                  {hiddenFields.map((field) => (
+                    <td key={field} className="px-4 py-2 border max-lg:hidden">
+                      {cliente[field]}
+                    </td>
+                  ))}
+                  <td className="px-4 py-2 border text-center">
+                    <FontAwesomeIcon
+                      icon={faUserPen}
+                      className="cursor-pointer text-blue-500"
+                      onClick={() => openModal(cliente.id)}
+                    />
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
 
@@ -273,6 +313,8 @@ const TurnosPage = () => {
           </div>
         </div>
       )}
+
+      <ModalAppointment isOpen={isModalOpen} UUID={selectedAppointmentId} />
     </div>
   );
 };
